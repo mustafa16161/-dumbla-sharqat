@@ -4,139 +4,373 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>دُمبلة الشرقاط</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #111;
+      background: #111827;
       color: white;
       text-align: center;
     }
-    .box {
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 25px;
-      background: #222;
-      border-radius: 15px;
-    }
-    h1 {
-      color: #ffd700;
-    }
-    input {
+
+    .container {
       width: 90%;
-      padding: 13px;
-      margin: 7px;
-      border: 0;
-      border-radius: 8px;
+      max-width: 420px;
+      margin: 60px auto;
+      background: #1f2937;
+      padding: 25px;
+      border-radius: 15px;
       box-sizing: border-box;
     }
-    button {
-      width: 94%;
-      padding: 13px;
-      margin: 7px;
-      border: 0;
+
+    h1 {
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px;
+      margin: 8px 0;
+      border: none;
       border-radius: 8px;
-      background: #ffd700;
-      color: #111;
-      font-weight: bold;
+      font-size: 16px;
     }
-    .مخفي {
-      display: none;
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
     }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary {
+      background: #374151;
+    }
+
+    .secondary:hover {
+      background: #4b5563;
+    }
+
     #رسالة {
       margin-top: 15px;
-      color: #ffd700;
+      min-height: 25px;
+    }
+
+    #الحساب {
+      display: none;
     }
   </style>
 </head>
+
 <body>
-  <div class="box">
+
+  <div class="container">
+
     <h1>🎮 دُمبلة الشرقاط</h1>
-    <div id="تسجيل">
-      <h2>تسجيل الدخول</h2>
-      <input id="ايميل_الدخول" type="email" placeholder="البريد الإلكتروني">
-      <input id="كلمة_الدخول" type="password" placeholder="كلمة المرور">
-      <button onclick="دخول()">دخول</button>
-      <button onclick="إظهار_التسجيل()">إنشاء حساب جديد</button>
-    </div>
-    <div id="إنشاء" class="مخفي">
+
+    <!-- التسجيل -->
+    <div id="التسجيل">
+
       <h2>إنشاء حساب</h2>
-      <input id="ايميل_جديد" type="email" placeholder="البريد الإلكتروني">
-      <input id="كلمة_جديدة" type="password" placeholder="كلمة المرور">
-      <button onclick="إنشاء_حساب()">إنشاء الحساب</button>
-      <button onclick="إظهار_الدخول()">رجوع</button>
+
+      <input
+        id="ايميل_جديد"
+        type="email"
+        placeholder="البريد الإلكتروني"
+      >
+
+      <input
+        id="كلمة_جديدة"
+        type="password"
+        placeholder="كلمة المرور"
+      >
+
+      <button type="button" onclick="إنشاء_حساب()">
+        إنشاء حساب
+      </button>
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="إظهار_الدخول()"
+      >
+        عندك حساب؟ تسجيل الدخول
+      </button>
+
     </div>
-    <div id="الحساب" class="مخفي">
-      <h2>حسابي</h2>
+
+
+    <!-- الدخول -->
+    <div id="الدخول" style="display:none;">
+
+      <h2>تسجيل الدخول</h2>
+
+      <input
+        id="ايميل_الدخول"
+        type="email"
+        placeholder="البريد الإلكتروني"
+      >
+
+      <input
+        id="كلمة_الدخول"
+        type="password"
+        placeholder="كلمة المرور"
+      >
+
+      <button type="button" onclick="دخول()">
+        تسجيل الدخول
+      </button>
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="إظهار_التسجيل()"
+      >
+        إنشاء حساب جديد
+      </button>
+
+    </div>
+
+
+    <!-- الحساب -->
+    <div id="الحساب">
+
+      <h2>👤 حسابك</h2>
+
       <p id="معلومات_الحساب"></p>
-      <button onclick="خروج()">تسجيل الخروج</button>
+
+      <button
+        type="button"
+        class="secondary"
+        onclick="خروج()"
+      >
+        تسجيل الخروج
+      </button>
+
     </div>
-    <p id="رسالة"></p>
+
+    <div id="رسالة"></div>
+
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    /*
-      ضع بيانات Supabase هنا:
-      1) رابط المشروع
-      2) المفتاح القابل للنشر
-    */
-    const رابط_المشروع = "ضع_رابط_المشروع_هنا";
-    const المفتاح_القابل_للنشر = "ضع_المفتاح_هنا";
-    const قاعدة_البيانات = supabase.createClient(
-      رابط_المشروع,
-      المفتاح_القابل_للنشر
-    );
-    function إظهار_التسجيل() {
-      document.getElementById("تسجيل").classList.add("مخفي");
-      document.getElementById("إنشاء").classList.remove("مخفي");
-      document.getElementById("رسالة").textContent = "";
-    }
-    function إظهار_الدخول() {
-      document.getElementById("إنشاء").classList.add("مخفي");
-      document.getElementById("تسجيل").classList.remove("مخفي");
-      document.getElementById("رسالة").textContent = "";
-    }
-    async function إنشاء_حساب() {
-      const البريد = document.getElementById("ايميل_جديد").value;
-      const كلمة_المرور = document.getElementById("كلمة_جديدة").value;
-      const { error } = await قاعدة_البيانات.auth.signUp({
-        email: البريد,
-        password: كلمة_المرور
-      });
-      if (error) {
-        document.getElementById("رسالة").textContent = error.message;
-        return;
-      }
-      document.getElementById("رسالة").textContent =
-        "تم إنشاء الحساب بنجاح.";
-    }
-    async function دخول() {
-      const البريد = document.getElementById("ايميل_الدخول").value;
-      const كلمة_المرور = document.getElementById("كلمة_الدخول").value;
-      const { data, error } =
-        await قاعدة_البيانات.auth.signInWithPassword({
-          email: البريد,
-          password: كلمة_المرور
-        });
-      if (error) {
-        document.getElementById("رسالة").textContent = error.message;
-        return;
-      }
-      إظهار_الحساب(data.user);
-    }
-    function إظهار_الحساب(المستخدم) {
-      document.getElementById("تسجيل").classList.add("مخفي");
-      document.getElementById("إنشاء").classList.add("مخفي");
-      document.getElementById("الحساب").classList.remove("مخفي");
-      document.getElementById("معلومات_الحساب").textContent =
-        "الحساب: " + المستخدم.email;
-    }
-    async function خروج() {
-      await قاعدة_البيانات.auth.signOut();
-      document.getElementById("الحساب").classList.add("مخفي");
-      document.getElementById("تسجيل").classList.remove("مخفي");
-    }
-  </script>
+
+
+<script>
+
+// ================================
+// بيانات Supabase
+// ================================
+
+const رابط_المشروع =
+  "https://qztqgxwfryoispaxqaly.supabase.co";
+
+const المفتاح_القابل_للنشر =
+  "sb_publishable_ufCS6pN3gp-wPv-DrmWshA_3Z678s6L";
+
+const قاعدة_البيانات = supabase.createClient(
+  رابط_المشروع,
+  المفتاح_القابل_للنشر
+);
+
+
+// ================================
+// إظهار التسجيل
+// ================================
+
+function إظهار_التسجيل() {
+
+  document.getElementById("التسجيل").style.display = "block";
+  document.getElementById("الدخول").style.display = "none";
+  document.getElementById("الحساب").style.display = "none";
+
+  document.getElementById("رسالة").innerText = "";
+}
+
+
+// ================================
+// إظهار الدخول
+// ================================
+
+function إظهار_الدخول() {
+
+  document.getElementById("التسجيل").style.display = "none";
+  document.getElementById("الدخول").style.display = "block";
+  document.getElementById("الحساب").style.display = "none";
+
+  document.getElementById("رسالة").innerText = "";
+}
+
+
+// ================================
+// إنشاء حساب
+// ================================
+
+async function إنشاء_حساب() {
+
+  const الايميل =
+    document.getElementById("ايميل_جديد").value.trim();
+
+  const كلمة_المرور =
+    document.getElementById("كلمة_جديدة").value;
+
+  const الرسالة =
+    document.getElementById("رسالة");
+
+  if (!الايميل || !كلمة_المرور) {
+
+    الرسالة.innerText =
+      "⚠️ اكتب البريد الإلكتروني وكلمة المرور";
+
+    return;
+  }
+
+  الرسالة.innerText =
+    "⏳ جاري إنشاء الحساب...";
+
+  const { data, error } =
+    await قاعدة_البيانات.auth.signUp({
+      email: الايميل,
+      password: كلمة_المرور
+    });
+
+  if (error) {
+
+    الرسالة.innerText =
+      "❌ " + error.message;
+
+    return;
+  }
+
+  الرسالة.innerText =
+    "✅ تم إنشاء الحساب بنجاح";
+
+  document.getElementById("ايميل_جديد").value = "";
+  document.getElementById("كلمة_جديدة").value = "";
+}
+
+
+// ================================
+// تسجيل الدخول
+// ================================
+
+async function دخول() {
+
+  const الايميل =
+    document.getElementById("ايميل_الدخول").value.trim();
+
+  const كلمة_المرور =
+    document.getElementById("كلمة_الدخول").value;
+
+  const الرسالة =
+    document.getElementById("رسالة");
+
+  if (!الايميل || !كلمة_المرور) {
+
+    الرسالة.innerText =
+      "⚠️ اكتب البريد الإلكتروني وكلمة المرور";
+
+    return;
+  }
+
+  الرسالة.innerText =
+    "⏳ جاري تسجيل الدخول...";
+
+  const { data, error } =
+    await قاعدة_البيانات.auth.signInWithPassword({
+      email: الايميل,
+      password: كلمة_المرور
+    });
+
+  if (error) {
+
+    الرسالة.innerText =
+      "❌ " + error.message;
+
+    return;
+  }
+
+  الرسالة.innerText = "";
+
+  إظهار_الحساب();
+
+  document.getElementById("معلومات_الحساب").innerText =
+    "البريد الإلكتروني: " + data.user.email;
+}
+
+
+// ================================
+// إظهار الحساب
+// ================================
+
+async function إظهار_الحساب() {
+
+  document.getElementById("التسجيل").style.display = "none";
+  document.getElementById("الدخول").style.display = "none";
+  document.getElementById("الحساب").style.display = "block";
+
+  const { data } =
+    await قاعدة_البيانات.auth.getUser();
+
+  if (data.user) {
+
+    document.getElementById("معلومات_الحساب").innerText =
+      "البريد الإلكتروني: " + data.user.email;
+  }
+}
+
+
+// ================================
+// تسجيل الخروج
+// ================================
+
+async function خروج() {
+
+  await قاعدة_البيانات.auth.signOut();
+
+  document.getElementById("الحساب").style.display = "none";
+
+  إظهار_الدخول();
+
+  document.getElementById("رسالة").innerText =
+    "✅ تم تسجيل الخروج";
+}
+
+
+// ================================
+// فحص إذا المستخدم داخل مسبقاً
+// ================================
+
+async function فحص_الحساب() {
+
+  const { data } =
+    await قاعدة_البيانات.auth.getUser();
+
+  if (data.user) {
+
+    إظهار_الحساب();
+
+  } else {
+
+    إظهار_التسجيل();
+
+  }
+}
+
+فحص_الحساب();
+
+</script>
+
 </body>
 </html>
-sb_publishable_ufCS6pN3gp-wPv-DrmWshA_3Z678s6L
