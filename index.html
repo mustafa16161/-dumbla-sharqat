@@ -1,4 +1,3 @@
-    index.html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -15,9 +14,9 @@
     }
     .box {
       max-width: 400px;
-      margin: 60px auto;
+      margin: 50px auto;
       padding: 25px;
-      background: #1d1d1d;
+      background: #222;
       border-radius: 15px;
     }
     h1 {
@@ -27,25 +26,24 @@
       width: 90%;
       padding: 13px;
       margin: 7px;
+      border: 0;
       border-radius: 8px;
-      border: none;
       box-sizing: border-box;
     }
     button {
       width: 94%;
       padding: 13px;
       margin: 7px;
-      border: none;
+      border: 0;
       border-radius: 8px;
       background: #ffd700;
       color: #111;
       font-weight: bold;
-      cursor: pointer;
     }
-    .hidden {
+    .مخفي {
       display: none;
     }
-    #message {
+    #رسالة {
       margin-top: 15px;
       color: #ffd700;
     }
@@ -53,87 +51,90 @@
 </head>
 <body>
   <div class="box">
-    <h1>دُمبلة الشرقاط</h1>
-    <div id="loginBox">
+    <h1>🎮 دُمبلة الشرقاط</h1>
+    <div id="تسجيل">
       <h2>تسجيل الدخول</h2>
-      <input id="loginEmail" type="email" placeholder="البريد الإلكتروني">
-      <input id="loginPassword" type="password" placeholder="كلمة المرور">
-      <button onclick="login()">دخول</button>
-      <button onclick="showSignup()">إنشاء حساب</button>
+      <input id="ايميل_الدخول" type="email" placeholder="البريد الإلكتروني">
+      <input id="كلمة_الدخول" type="password" placeholder="كلمة المرور">
+      <button onclick="دخول()">دخول</button>
+      <button onclick="إظهار_التسجيل()">إنشاء حساب جديد</button>
     </div>
-    <div id="signupBox" class="hidden">
+    <div id="إنشاء" class="مخفي">
       <h2>إنشاء حساب</h2>
-      <input id="signupEmail" type="email" placeholder="البريد الإلكتروني">
-      <input id="signupPassword" type="password" placeholder="كلمة المرور">
-      <button onclick="signup()">إنشاء الحساب</button>
-      <button onclick="showLogin()">رجوع لتسجيل الدخول</button>
+      <input id="ايميل_جديد" type="email" placeholder="البريد الإلكتروني">
+      <input id="كلمة_جديدة" type="password" placeholder="كلمة المرور">
+      <button onclick="إنشاء_حساب()">إنشاء الحساب</button>
+      <button onclick="إظهار_الدخول()">رجوع</button>
     </div>
-    <div id="accountBox" class="hidden">
-      <h2>حسابك</h2>
-      <p id="userEmail"></p>
-      <button onclick="logout()">تسجيل الخروج</button>
+    <div id="الحساب" class="مخفي">
+      <h2>حسابي</h2>
+      <p id="معلومات_الحساب"></p>
+      <button onclick="خروج()">تسجيل الخروج</button>
     </div>
-    <p id="message"></p>
+    <p id="رسالة"></p>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ضع معلومات مشروع Supabase هنا لاحقاً
-    const SUPABASE_URL = "ضع_رابط_مشروعك_هنا";
-    const SUPABASE_KEY = "ضع_المفتاح_القابل_للنشر_هنا";
-    const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
+    /*
+      ضع بيانات Supabase هنا:
+      1) رابط المشروع
+      2) المفتاح القابل للنشر
+    */
+    const رابط_المشروع = "ضع_رابط_المشروع_هنا";
+    const المفتاح_القابل_للنشر = "ضع_المفتاح_هنا";
+    const قاعدة_البيانات = supabase.createClient(
+      رابط_المشروع,
+      المفتاح_القابل_للنشر
     );
-    function showSignup() {
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("signupBox").classList.remove("hidden");
-      document.getElementById("message").textContent = "";
+    function إظهار_التسجيل() {
+      document.getElementById("تسجيل").classList.add("مخفي");
+      document.getElementById("إنشاء").classList.remove("مخفي");
+      document.getElementById("رسالة").textContent = "";
     }
-    function showLogin() {
-      document.getElementById("signupBox").classList.add("hidden");
-      document.getElementById("loginBox").classList.remove("hidden");
-      document.getElementById("message").textContent = "";
+    function إظهار_الدخول() {
+      document.getElementById("إنشاء").classList.add("مخفي");
+      document.getElementById("تسجيل").classList.remove("مخفي");
+      document.getElementById("رسالة").textContent = "";
     }
-    async function signup() {
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      const { error } = await supabaseClient.auth.signUp({
-        email: email,
-        password: password
+    async function إنشاء_حساب() {
+      const البريد = document.getElementById("ايميل_جديد").value;
+      const كلمة_المرور = document.getElementById("كلمة_جديدة").value;
+      const { error } = await قاعدة_البيانات.auth.signUp({
+        email: البريد,
+        password: كلمة_المرور
       });
       if (error) {
-        document.getElementById("message").textContent = error.message;
+        document.getElementById("رسالة").textContent = error.message;
         return;
       }
-      document.getElementById("message").textContent =
+      document.getElementById("رسالة").textContent =
         "تم إنشاء الحساب بنجاح.";
     }
-    async function login() {
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+    async function دخول() {
+      const البريد = document.getElementById("ايميل_الدخول").value;
+      const كلمة_المرور = document.getElementById("كلمة_الدخول").value;
       const { data, error } =
-        await supabaseClient.auth.signInWithPassword({
-          email: email,
-          password: password
+        await قاعدة_البيانات.auth.signInWithPassword({
+          email: البريد,
+          password: كلمة_المرور
         });
       if (error) {
-        document.getElementById("message").textContent = error.message;
+        document.getElementById("رسالة").textContent = error.message;
         return;
       }
-      showAccount(data.user);
+      إظهار_الحساب(data.user);
     }
-    function showAccount(user) {
-      document.getElementById("loginBox").classList.add("hidden");
-      document.getElementById("signupBox").classList.add("hidden");
-      document.getElementById("accountBox").classList.remove("hidden");
-      document.getElementById("userEmail").textContent =
-        "الحساب: " + user.email;
-      document.getElementById("message").textContent = "";
+    function إظهار_الحساب(المستخدم) {
+      document.getElementById("تسجيل").classList.add("مخفي");
+      document.getElementById("إنشاء").classList.add("مخفي");
+      document.getElementById("الحساب").classList.remove("مخفي");
+      document.getElementById("معلومات_الحساب").textContent =
+        "الحساب: " + المستخدم.email;
     }
-    async function logout() {
-      await supabaseClient.auth.signOut();
-      document.getElementById("accountBox").classList.add("hidden");
-      document.getElementById("loginBox").classList.remove("hidden");
+    async function خروج() {
+      await قاعدة_البيانات.auth.signOut();
+      document.getElementById("الحساب").classList.add("مخفي");
+      document.getElementById("تسجيل").classList.remove("مخفي");
     }
   </script>
 </body>
