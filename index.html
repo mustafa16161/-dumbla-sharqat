@@ -1,0 +1,140 @@
+    index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دُمبلة الشرقاط</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+    }
+    .box {
+      max-width: 400px;
+      margin: 60px auto;
+      padding: 25px;
+      background: #1d1d1d;
+      border-radius: 15px;
+    }
+    h1 {
+      color: #ffd700;
+    }
+    input {
+      width: 90%;
+      padding: 13px;
+      margin: 7px;
+      border-radius: 8px;
+      border: none;
+      box-sizing: border-box;
+    }
+    button {
+      width: 94%;
+      padding: 13px;
+      margin: 7px;
+      border: none;
+      border-radius: 8px;
+      background: #ffd700;
+      color: #111;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+    #message {
+      margin-top: 15px;
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>دُمبلة الشرقاط</h1>
+    <div id="loginBox">
+      <h2>تسجيل الدخول</h2>
+      <input id="loginEmail" type="email" placeholder="البريد الإلكتروني">
+      <input id="loginPassword" type="password" placeholder="كلمة المرور">
+      <button onclick="login()">دخول</button>
+      <button onclick="showSignup()">إنشاء حساب</button>
+    </div>
+    <div id="signupBox" class="hidden">
+      <h2>إنشاء حساب</h2>
+      <input id="signupEmail" type="email" placeholder="البريد الإلكتروني">
+      <input id="signupPassword" type="password" placeholder="كلمة المرور">
+      <button onclick="signup()">إنشاء الحساب</button>
+      <button onclick="showLogin()">رجوع لتسجيل الدخول</button>
+    </div>
+    <div id="accountBox" class="hidden">
+      <h2>حسابك</h2>
+      <p id="userEmail"></p>
+      <button onclick="logout()">تسجيل الخروج</button>
+    </div>
+    <p id="message"></p>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // ضع معلومات مشروع Supabase هنا لاحقاً
+    const SUPABASE_URL = "ضع_رابط_مشروعك_هنا";
+    const SUPABASE_KEY = "ضع_المفتاح_القابل_للنشر_هنا";
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+    function showSignup() {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("signupBox").classList.remove("hidden");
+      document.getElementById("message").textContent = "";
+    }
+    function showLogin() {
+      document.getElementById("signupBox").classList.add("hidden");
+      document.getElementById("loginBox").classList.remove("hidden");
+      document.getElementById("message").textContent = "";
+    }
+    async function signup() {
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const { error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+      });
+      if (error) {
+        document.getElementById("message").textContent = error.message;
+        return;
+      }
+      document.getElementById("message").textContent =
+        "تم إنشاء الحساب بنجاح.";
+    }
+    async function login() {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+      if (error) {
+        document.getElementById("message").textContent = error.message;
+        return;
+      }
+      showAccount(data.user);
+    }
+    function showAccount(user) {
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("signupBox").classList.add("hidden");
+      document.getElementById("accountBox").classList.remove("hidden");
+      document.getElementById("userEmail").textContent =
+        "الحساب: " + user.email;
+      document.getElementById("message").textContent = "";
+    }
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      document.getElementById("accountBox").classList.add("hidden");
+      document.getElementById("loginBox").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
